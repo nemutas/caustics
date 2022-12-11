@@ -1,17 +1,24 @@
 import * as THREE from 'three'
+import { resolvePath } from '../../scripts/utils'
 import { caustics } from './Caustics'
 import { gl } from './core/WebGL'
 import { ground } from './Ground'
+import { Assets, loadAssets } from './utils/assetLoader'
 import { controls } from './utils/OrbitControls'
 
 export class TCanvas {
   private animeID?: number
+  private assets: Assets = {
+    groundNormal: { path: resolvePath('resources/Ground054_1K_NormalGL.jpg') },
+  }
 
   constructor(private parentNode: ParentNode) {
-    this.init()
-    this.createLights()
-    this.createObjects()
-    this.setAnimationFrame()
+    loadAssets(this.assets).then(() => {
+      this.init()
+      this.createLights()
+      this.createObjects()
+      this.setAnimationFrame()
+    })
   }
 
   private init() {
@@ -31,6 +38,7 @@ export class TCanvas {
     spotLight.penumbra = Math.PI / 4
     spotLight.angle = Math.PI / 4
     spotLight.shadow.mapSize = new THREE.Vector2(2048, 2048)
+    spotLight.shadow.bias = 0.0003
     spotLight.name = 'spotlight'
     gl.scene.add(spotLight)
 
@@ -45,7 +53,10 @@ export class TCanvas {
   private createObjects() {
     {
       const geometry = new THREE.PlaneGeometry(30, 30, 256, 256)
-      const material = new THREE.MeshStandardMaterial({ displacementBias: -0.1 })
+      const material = new THREE.MeshStandardMaterial({
+        normalMap: this.assets.groundNormal.data as THREE.Texture,
+        normalScale: new THREE.Vector2(2, 2),
+      })
       const mesh = new THREE.Mesh(geometry, material)
       mesh.rotation.x = -Math.PI / 2
       mesh.receiveShadow = true
