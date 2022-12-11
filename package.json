@@ -1,17 +1,20 @@
 {
   "name": "caustics",
+  "homepage": "https://nemutas.github.io/caustics/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "devDependencies": {
     "@types/node": "^18.11.5",
     "@types/three": "^0.146.0",
     "autoprefixer": "^10.4.12",
+    "gh-pages": "^4.0.0",
     "prettier": "^2.8.0",
     "ress": "^5.0.2",
     "sass": "^1.54.5",
